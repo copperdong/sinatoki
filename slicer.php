@@ -39,6 +39,7 @@ foreach($data["words"] as $index => $word){
 function extractPhones($word, $baseAudioFilename, $model){
 	// Get all possible slices in all possible sizes
 	foreach($word["phones"] as $index => $phone){
+		$phoneme = explode("_", $phone["phone"])[0];
 		// Get the beginning of the phone
 		if($index === 0){
 			// first phoneme is also the beginning of a word
@@ -56,18 +57,18 @@ function extractPhones($word, $baseAudioFilename, $model){
 		}
 		$endTime = $startTime + $phone["duration"];
 		// Extract just the isolated phoneme right now
-		sliceAudiofile($startTime, $endTime, $baseAudioFilename, $model."/phones/".$phone["phone"].".mp3");
+		sliceAudiofile($startTime, $endTime, $baseAudioFilename, $model."/phones/".$phoneme.".mp3");
 		// Now, extract the context of the phoneme along with it
 		// Start working from current phoneme, and then look into the future
 		// Save all phonemes that are part of context to string for file naming
-		$allString = $phone["phone"]."__";
+		$allString = $phoneme."_";
 		for($i = 1; $i < MAX_SLICE_SIZE; $i++){
 			// Check whether there is a phoneme in the future we can use
 			if(!empty($word["phones"][$index + $i])){
 				$futurePhoneme = $word["phones"][$index + $i];
 				// Phone exists, slice new times
 				$endTime += $futurePhoneme["duration"];
-				$allString .= $futurePhoneme["phone"]."__";
+				$allString .= explode("_", $futurePhoneme["phone"])[0]."_";
 				sliceAudiofile($startTime, $endTime, $baseAudioFilename, $model."/syllables/".$allString.".mp3");
 			}
 		}

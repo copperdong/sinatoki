@@ -4,6 +4,15 @@ An improved version of the [synthi speech synthesizer originally created at Juge
  
 This code is released under the [MIT License.](LICENSE) The original code was mainly written by @schokotets and @JackOBIsReal - thank you guys a lot! Although almost none of it was retained in this repository, I drew a lot of inspiration from their work.
 
+## Dependencies
+
+Synthi depends on several other projects, namely
+
+* docker: required to run the container of the forced aligner gentle
+* gentle: aligining audio with transcript on phoneme level
+* espeak: handles correct pronunciation
+* ffmpeg: slices speech
+
 ## Manual work
 
 Although voice models are generated completely automatically, you will have to provide an audio file and a transcript of what was being said. Please note that the longer the audio, the better the quality of the resulting voice model.
