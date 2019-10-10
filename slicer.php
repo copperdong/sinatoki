@@ -21,7 +21,7 @@ define("MAX_SLICE_SIZE", 3);
 // Parse the json data
 $data = json_decode(file_get_contents($alignedTranscriptFilename));
 
-// Loop through the words (we don't need the rest atm) to figure out stuff
+// Loop through the words (we dons't need the rest atm) to figure out stuff
 foreach($data["words"] as $index => $word){
 	// Ignore the word if the matching didn't work
 	if($word["case"] === "success"){
@@ -33,7 +33,29 @@ foreach($data["words"] as $index => $word){
 // Extract all the relevant slices from the audio file using ffmpeg
 function extractPhones($word, $baseAudioFilename, $model){
 	// Get all possible slices in all possible sizes
-	for($i = 0; $i < MAX_SLICE_SIZE, $i++){
-		
-	}
+	foreach($word["phones"] as $index => $phone){
+		$startTime = $word["start"];
+		$endTime = $startTime = $phone["duration"];
+		// Extract just the isolated phoneme right now
+		sliceAudiofile($startTime, $endTime, $baseAudioFileName, $model."/phones/".$phone["phone"].".mp3");
+		// Now, extract the context of the phoneme along with it
+		for($i = 1; $i < MAX_SLICE_SIZE, $i++){
+			
+		}
+	}	
+}
+
+// Assemble an ffmpeg command for slicing everything up
+function sliceAudiofile($start, $end, $inputFilename, $outputFilename){
+	// Tell ffmpeg what file to read from
+	$command = "ffmpeg -i ".$inputFilename;
+	// We're working with mp3 files here and our slice begins here
+	$command .= "-vn -acodec mp3 -ss ".$start;
+	// And the slice ends here
+	$command .= "-t ".$end;
+	// Save it to disk using the given filename
+	$command .= " ".$outputFilename;
+
+	// Run the ffmpeg command
+	exec($command);
 }
