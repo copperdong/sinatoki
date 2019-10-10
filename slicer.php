@@ -11,18 +11,23 @@ $modelFolder = $argv[3];
 
 // How big should the slices be, at maximum?
 define("MAX_SLICE_SIZE", 3);
+define("ANNOUNCE_WORKING_STEPS", 10);
 
 // Generate necessary file structure
 @mkdir($modelFolder);
-@mkdir($modelFolder."words");
-@mkdir($modelFolder."phones");
-@mkdir($modelFolder."syllables");
+@mkdir($modelFolder."/words");
+@mkdir($modelFolder."/phones");
+@mkdir($modelFolder."/syllables");
 
 // Parse the json data
-$data = json_decode(file_get_contents($alignedTranscriptFilename));
+$data = json_decode(file_get_contents($alignedTranscriptFilename), true);
 
 // Loop through the words (we dons't need the rest atm) to figure out stuff
 foreach($data["words"] as $index => $word){
+	// Tell the user about the progress, but not all the time
+	if($index % ANNOUNCE_WORKING_STEPS === 0){
+		echo "Processing word ".$index." of ".count($data["words"])."\n";
+	}	
 	// Ignore the word if the matching didn't work
 	if($word["case"] === "success"){
 		// Extract all phonemes from the file
@@ -37,9 +42,9 @@ function extractPhones($word, $baseAudioFilename, $model){
 		$startTime = $word["start"];
 		$endTime = $startTime = $phone["duration"];
 		// Extract just the isolated phoneme right now
-		sliceAudiofile($startTime, $endTime, $baseAudioFileName, $model."/phones/".$phone["phone"].".mp3");
+		sliceAudiofile($startTime, $endTime, $baseAudioFilename, $model."/phones/".$phone["phone"].".mp3");
 		// Now, extract the context of the phoneme along with it
-		for($i = 1; $i < MAX_SLICE_SIZE, $i++){
+		for($i = 1; $i < MAX_SLICE_SIZE; $i++){
 			
 		}
 	}	
@@ -49,12 +54,13 @@ function extractPhones($word, $baseAudioFilename, $model){
 function sliceAudiofile($start, $end, $inputFilename, $outputFilename){
 	// Tell ffmpeg what file to read from
 	$command = "ffmpeg -i ".$inputFilename;
-	// We're working with mp3 files here and our slice begins here
-	$command .= "-vn -acodec mp3 -ss ".$start;
+	// We're working with mp3 files and our slice begins here
+	$command .= " -vn -acodec mp3 -ss ".$start;
 	// And the slice ends here
-	$command .= "-t ".$end;
-	// Save it to disk using the given filename
-	$command .= " ".$outputFilename;
+	$command .= " -t ".$end;
+	// Save it to disk using the given filename and blatantly disagree with everything
+	// Also, we don't really need the output from ffmpeg, so we just silence it
+	$command .= " -n -loglevel -8 ".$outputFilename;
 
 	// Run the ffmpeg command
 	exec($command);
