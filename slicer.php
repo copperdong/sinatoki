@@ -44,8 +44,17 @@ function extractPhones($word, $baseAudioFilename, $model){
 		// Extract just the isolated phoneme right now
 		sliceAudiofile($startTime, $endTime, $baseAudioFilename, $model."/phones/".$phone["phone"].".mp3");
 		// Now, extract the context of the phoneme along with it
+		// Start working from current phoneme, and then look into the future
+		// Save all phonemes that are part of context to string for file naming
+		$allString = $phone["phone"]."__";
 		for($i = 1; $i < MAX_SLICE_SIZE; $i++){
-			
+			// Check whether there is a phoneme in the future we can use
+			if($futurePhoneme = $word["phones"][$index += $i]){
+				// Phone exists, slice new times
+				$endTime += $futurePhoneme["duration"];
+				$allString .= $futurePhoneme["phone"]."__";
+				sliceAudiofile($startTime, $endTime, $baseAudioFilename, $model."/syllables/".$allString.".mp3");
+			}
 		}
 	}	
 }
