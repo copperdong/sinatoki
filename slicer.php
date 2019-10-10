@@ -49,7 +49,8 @@ function extractPhones($word, $baseAudioFilename, $model){
 		$allString = $phone["phone"]."__";
 		for($i = 1; $i < MAX_SLICE_SIZE; $i++){
 			// Check whether there is a phoneme in the future we can use
-			if($futurePhoneme = $word["phones"][$index += $i]){
+			if(!empty($word["phones"][$index + $i])){
+				$futurePhoneme = $word["phones"][$index + $i];
 				// Phone exists, slice new times
 				$endTime += $futurePhoneme["duration"];
 				$allString .= $futurePhoneme["phone"]."__";
@@ -61,16 +62,20 @@ function extractPhones($word, $baseAudioFilename, $model){
 
 // Assemble an ffmpeg command for slicing everything up
 function sliceAudiofile($start, $end, $inputFilename, $outputFilename){
-	// Tell ffmpeg what file to read from
-	$command = "ffmpeg -i ".$inputFilename;
-	// We're working with mp3 files and our slice begins here
-	$command .= " -vn -acodec mp3 -ss ".$start;
-	// And the slice ends here
-	$command .= " -t ".$end;
-	// Save it to disk using the given filename and blatantly disagree with everything
-	// Also, we don't really need the output from ffmpeg, so we just silence it
-	$command .= " -n -loglevel -8 ".$outputFilename;
-
-	// Run the ffmpeg command
-	exec($command);
+	// Do not do the same job twice (takes so much time!)
+	// TODO: This will check will eventually have to move somewhere else
+	if(!file_exists($outputFilename)){
+		// Tell ffmpeg what file to read from
+		$command = "ffmpeg -i ".$inputFilename;
+		// We're working with mp3 files and our slice begins here
+		$command .= " -vn -acodec mp3 -ss ".$start;
+		// And the slice ends here
+		$command .= " -t ".$end;
+		// Save it to disk using the given filename and blatantly disagree with everything
+		// Also, we don't really need the output from ffmpeg, so we just silence it
+		$command .= " -n -loglevel -8 ".$outputFilename;
+		
+		// Run the ffmpeg command
+		exec($command);
+	}	
 }
