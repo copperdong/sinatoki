@@ -15,7 +15,7 @@ Synthi depends on several other projects, namely
 
 ## Manual work
 
-Although voice models are generated completely automatically, you will have to provide an audio file and a transcript of what was being said. Please note that the longer the audio, the better the quality of the resulting voice model.
+Although voice models are generated automatically, you will have to provide an audio file and a transcript of what had been said. The longer your audio, the better the quality of the resulting voice model. Make your the quality of your input file is OK, otherwise you will have disturbing noise in your generated voice.
 
 In order to create the model, run 
 
@@ -23,6 +23,12 @@ In order to create the model, run
 
 If you'd like to use my included example, it would look something like this: 
 
-```sudo ./gentle-process.sh /home/niklas/Documents/GitProjects/synthi-tts/models/niklas/base niklas-baseaudio.mp3 niklas-transcript.txt niklas```
+```sudo ./create-voicemodel.sh /home/niklas/Documents/GitProjects/synthi-tts/models/niklas/base niklas-baseaudio.mp3 niklas-transcript.txt niklas```
 
 That's it! Nothing more for you to do ;)
+
+## Usage
+
+To generate speech, use synthesizer.php like so:
+
+```php synthesizer.php niklas Hello World```
