@@ -39,8 +39,22 @@ foreach($data["words"] as $index => $word){
 function extractPhones($word, $baseAudioFilename, $model){
 	// Get all possible slices in all possible sizes
 	foreach($word["phones"] as $index => $phone){
-		$startTime = $word["start"];
-		$endTime = $startTime = $phone["duration"];
+		// Get the beginning of the phone
+		if($index === 0){
+			// first phoneme is also the beginning of a word
+			$startTime = $word["start"];
+		} else {
+			// Loop through all to find out the end of the last phone
+			$startTime = $word["start"];
+			foreach($word["phones"] as $count => $priorPhone){
+				if($count < $index){
+					$startTime += $priorPhone["duration"];
+				} else {
+					break;
+				}	
+			}
+		}
+		$endTime = $startTime + $phone["duration"];
 		// Extract just the isolated phoneme right now
 		sliceAudiofile($startTime, $endTime, $baseAudioFilename, $model."/phones/".$phone["phone"].".mp3");
 		// Now, extract the context of the phoneme along with it
@@ -70,7 +84,7 @@ function sliceAudiofile($start, $end, $inputFilename, $outputFilename){
 		// We're working with mp3 files and our slice begins here
 		$command .= " -vn -acodec mp3 -ss ".$start;
 		// And the slice ends here
-		$command .= " -t ".$end;
+		$command .= " -to ".$end;
 		// Save it to disk using the given filename and blatantly disagree with everything
 		// Also, we don't really need the output from ffmpeg, so we just silence it
 		$command .= " -n -loglevel -8 ".$outputFilename;
