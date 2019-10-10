@@ -2,6 +2,8 @@
 
 An improved version of the [synthi speech synthesizer originally created at Jugend hackt Berlin 2019](https://github.com/Jugendhackt/synthi-tts), using the same technologies but with more intelligent processing of the available data.
  
+This code is released under the [MIT License.](LICENSE) The original code was mainly written by @schokotets and @JackOBIsReal - thank you guys a lot! Although almost none of the code was retained in this repository, I drew a lot of inspiration from their work.
+
 ## Manual work
 
 Although voice models are generated completely automatically, you will have to provide an audio file and a transcript of what was being said. Please note that the longer the audio, the better the quality of the resulting voice model.
