@@ -2,7 +2,7 @@
 
 // This script maps espeak's IPA output to gentle/kaldi phones
 
-function convertIPAtoGentle($espeak){
+function convertIPAtoGentle($ipa){
 	$replace = [
 		"ð" => "th_E",
 		"ə" => "ah_B",
@@ -24,14 +24,20 @@ function convertIPAtoGentle($espeak){
 		"l" => "l_B",
 		"eɪ" => "ey_I",
 		"z" => "z_E",
-		"ɡ" => "g_B"
+		"ɡ" => "g_B",
+		"ɜ" => "er_E",
+		"h" => "hh",
+		"əʊ" => "aw_I",
+		"d" => "d_I",
+		"ŋ" => "ng_E",
+		"t" => "t_E",
+		"θ" => "th_E",
+		"aɪ" => "ay_I",
+		"ɐ" => "eh_I",
+		"u" => "uh_I",
+		"ɛ" => "ae_I"
 	];
 
 	// Map every single ipa sound to a phoneme
-	$output = [];
-	foreach($espeak as $value){
-		$output[] = $replace[$value];
-	}
-
-	return $output;
+	return $replace[$ipa];
 }
