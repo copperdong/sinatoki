@@ -40,8 +40,27 @@ class Synthesizer {
 		}
 
 		$fileOrder = [];
-		foreach($soundOrder as $sound){
-			$fileOrder[] = $this->model."/phones/".$sound.".mp3";
+		$ignoreIndexes = [];
+		foreach($soundOrder as $soundIndex => $sound){
+			if(!in_array($soundIndex, $ignoreIndexes)){
+				// Look into the future, see if there are more sounds present
+				$futureIndex = $soundIndex + 1;
+				if(!empty($soundOrder[$futureIndex])){
+					// Sound is present. Check whether we already know that phoneme context
+					$futureSound = $soundOrder[$futureIndex];
+					if(file_exists($this->model."/syllables/".$sound."_".$futureSound."_.mp3")){
+						// Checkmate!
+						$fileOrder[] = $this->model."/syllables/".$sound."_".$futureSound."_.mp3";
+						// Don't add the same sound twice
+						$ignoreIndexes[] = $futureIndex;
+					} else {
+						// Only save the single phone
+						$fileOrder[] = $this->model."/phones/".$sound.".mp3";
+					}
+				} else {
+					$fileOrder[] = $this->model."/phones/".$sound.".mp3";
+				}
+			}	
 		}
 
 		exec("cat ".implode(" ", $fileOrder)." > ".$this->outputFilename.".mp3");
