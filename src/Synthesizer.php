@@ -34,17 +34,25 @@ class Synthesizer {
 			$tokens = explode("_", $word);
 			// Loop through all sounds and match them
 			foreach($tokens as $token){
-				$soundOrder[] = Converter::convertIPAtoGentle($token);
+				$sound = Converter::convertIPAtoGentle($token);
+				// Make sure it is an actual sound
+				if(!empty($sound)){
+					$soundOrder[] = $sound;
+				}
 			}
-			// Add silence to the end of a word
-			// TODO
+			// TODO: Adjust silence length so it best fits the speaker model
+			$soundOrder[] = "silence";
 		}
 
 		$fileOrder = [];
 		$ignoreIndexes = [];
 		foreach($soundOrder as $soundIndex => $sound){
+			// Add silence
+			if($sound === "silence"){
+				$fileOrder[] = "silence.mp3";
+			}
 			// Do not add the same sound multiple times!
-			if(!in_array($soundIndex, $ignoreIndexes)){
+			elseif(!in_array($soundIndex, $ignoreIndexes)){
 				// Fallback to the isolated phone if our processing doesn't work
 				$save = $this->model."/phones/".$sound.".mp3";
 				// Look into the future, see if there are more sounds present
@@ -59,6 +67,8 @@ class Synthesizer {
 							$currentPhoneString .= "_".$futureSound;
 							// Don't add the same sound twice
 							$ignoreIndexes[] = $futureIndex;
+						} else {
+							break;
 						}
 					}
 				}
@@ -73,7 +83,29 @@ class Synthesizer {
 			}	
 		}
 
-		exec("cat ".implode(" ", $fileOrder)." > ".$this->outputFilename.".mp3");
+		$this->produceSpeech($fileOrder);
+	}
+
+	/**
+	* Use ffmpeg to create the final speech file
+	*/
+	private function produceSpeech($fileOrder){
+		// Assembly of a new ffmpeg command
+		$command = "ffmpeg -f mp3 -i ";
+		// Add all the mp3s to the command
+		$command .= implode(" -f mp3 -i ", $fileOrder);
+
+		// Tell it more about the files
+		$command .= " -filter_complex '";
+		for($i = 0; $i < count($fileOrder); $i++){
+			$command .= "[".$i.":0]";
+		}
+
+		// Export options
+		$command .= "concat=n=".count($fileOrder).":v=0:a=1[out]' -map [out] -y -loglevel warning ".$this->outputFilename.".mp3";
+
+		// Run it
+		exec($command);
 	}
 
 }

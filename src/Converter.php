@@ -47,7 +47,8 @@ class Converter {
 			"tʃ" => "sh",
 			"ɔ" => "ow",
 			"əl" => "l",
-			"eə" => "ae"
+			"eə" => "ae",
+			"ʃ" => "sh"
 		];
 
 		// Map every single ipa sound to a phoneme
