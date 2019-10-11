@@ -8,12 +8,15 @@ This code is released under the [MIT License.](LICENSE) The original code was ma
 
 Synthi depends on several other projects, namely
 
+* composer: fetch other php dependencies
 * docker: required to run the container of the forced aligner gentle
-* gentle: aligning audio with transcript on phoneme level
+* gentle: aligning audio with transcript on phoneme level (is automatically downloaded and installed when the model creation script creates the docker container)
 * espeak: handles correct pronunciation
 * ffmpeg: slices speech
 
 ## Manual work
+
+To use synthi, grab the source code and run ```composer install``` to fetch all external php dependencies as well as creating an autoloader.
 
 Although voice models are generated automatically, you will have to provide an audio file and a transcript of what was said. The longer your audio, the better the quality of the resulting voice model.
 
