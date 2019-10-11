@@ -11,4 +11,4 @@ docker run -P -it -v $1:/gentle/output lowerquality/gentle python /gentle/align.
 
 echo "Finished gentle processing... Now slicing up!"
 
-php slicer.php $1/output.json $1/$2 $4 
+php sliceAudio.php $1/output.json $1/$2 $4 

@@ -1,0 +1,18 @@
+{
+    "name": "nkreer/synthi-tts-revamped",
+    "description": "speech synthesizer",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Niklas Kreer",
+            "email": "niklas@kreer.me"
+        }
+    ],
+    "require": {},
+    "autoload": {
+       "psr-4": {
+          "Synthi\\": "src/"
+       }
+    }
+}
