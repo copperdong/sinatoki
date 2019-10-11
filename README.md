@@ -2,7 +2,17 @@
 
 An improved version of the [synthi speech synthesizer originally created at Jugend hackt Berlin 2019](https://github.com/Jugendhackt/synthi-tts), using the same technologies but with more intelligent processing of the available data.
  
-This code is released under the [MIT License.](LICENSE) The original code was mainly written by @schokotets and @JackOBIsReal - thank you guys a lot! Although almost none of it was retained in this repository, I drew a lot of inspiration from their work.
+This code is released under the [MIT License.](LICENSE) The original code was mainly written by [@schokotets](https://github.com/schokotets) and [@JackOBIsReal](https://github.com/JackOBIsReal) - thank you guys a lot! Although almost none of it was retained in this repository, I drew a lot of inspiration from their work.
+
+## TODO
+
+Although we can create understandable speech at the moment, some more things will have to be done to make it sound even more natural:
+
+* Save the same context (and phoneme) multiple times, but include context as to where it has been used (surrounding words, etc.)
+* do not ignore emphasis
+* Ignore unusable slices (silence, too short, etc.)
+* Remove glottal stops automatically
+* implement interface so the system/a browser can use the voices
 
 ## Dependencies
 
@@ -11,10 +21,12 @@ Synthi depends on several other projects, namely
 * composer: fetch other php dependencies
 * docker: required to run the container of the forced aligner gentle
 * gentle: aligning audio with transcript on phoneme level (is automatically downloaded and installed when the model creation script creates the docker container)
-* espeak: handles correct pronunciation
+* espeak: handles correct pronunciation and emphasis
 * ffmpeg: slices speech
 
 ## Manual work
+
+**It looks more difficult than it is!**
 
 To use synthi, grab the source code and run ```composer install``` to fetch all external php dependencies as well as creating an autoloader.
 
