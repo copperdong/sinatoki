@@ -8,7 +8,7 @@ class Synthesizer {
 
 	public $model;
 
-	public $outputFilename = "output.mp3";
+	public $outputFilename = "output";
 
 	public function __construct($model){
 		$this->model = $model;
