@@ -39,7 +39,9 @@ function convertIPAtoGentle($ipa){
 		"a" => "ae",
 		"j" => "y",
 		"i" => "iy",
-		"tʃ" => "sh"
+		"tʃ" => "sh",
+		"ɔ" => "ow",
+		"əl" => "l"
 	];
 
 	// Map every single ipa sound to a phoneme

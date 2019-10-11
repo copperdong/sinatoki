@@ -21,7 +21,7 @@ function speak($text, $model){
 
 	// Process ipa string
 	$ignoreChars = ["ˈ", "ˌ", "ː"]; 
-	// Ignore these as we don't handle pronunciation yet
+	// Ignore these as we don't handle emphasis yet
 	$ipa = str_ireplace($ignoreChars, "", $ipa);
 	echo $ipa;
 	// Tokenize and convert to gentle

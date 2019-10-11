@@ -9,13 +9,13 @@ This code is released under the [MIT License.](LICENSE) The original code was ma
 Synthi depends on several other projects, namely
 
 * docker: required to run the container of the forced aligner gentle
-* gentle: aligining audio with transcript on phoneme level
+* gentle: aligning audio with transcript on phoneme level
 * espeak: handles correct pronunciation
 * ffmpeg: slices speech
 
 ## Manual work
 
-Although voice models are generated automatically, you will have to provide an audio file and a transcript of what had been said. The longer your audio, the better the quality of the resulting voice model. Make your the quality of your input file is OK, otherwise you will have disturbing noise in your generated voice.
+Although voice models are generated automatically, you will have to provide an audio file and a transcript of what was said. The longer your audio, the better the quality of the resulting voice model.
 
 In order to create the model, run 
 

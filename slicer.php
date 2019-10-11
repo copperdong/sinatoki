@@ -22,13 +22,13 @@ define("ANNOUNCE_WORKING_STEPS", 10);
 // Parse the json data
 $data = json_decode(file_get_contents($alignedTranscriptFilename), true);
 
-// Loop through the words (we dons't need the rest atm) to figure out stuff
+// Loop through the words (we don't need the rest atm) to figure out stuff
 foreach($data["words"] as $index => $word){
 	// Tell the user about the progress, but not all the time
 	if($index % ANNOUNCE_WORKING_STEPS === 0){
 		echo "Processing word ".$index." of ".count($data["words"])."\n";
 	}	
-	// Ignore the word if the matching didn't work
+	// Ignore the word if matching didn't work
 	if($word["case"] === "success"){
 		// Extract all phonemes from the file
 		extractPhones($word, $baseAudioFilename, $modelFolder);
@@ -37,7 +37,7 @@ foreach($data["words"] as $index => $word){
 
 // Extract all the relevant slices from the audio file using ffmpeg
 function extractPhones($word, $baseAudioFilename, $model){
-	// Get all possible slices in all possible sizes
+	// Get all possible slices in every possible size
 	foreach($word["phones"] as $index => $phone){
 		$phoneme = explode("_", $phone["phone"])[0];
 		// Get the beginning of the phone
@@ -68,7 +68,7 @@ function extractPhones($word, $baseAudioFilename, $model){
 				$futurePhoneme = $word["phones"][$index + $i];
 				// Phone exists, slice new times
 				$endTime += $futurePhoneme["duration"];
-				$allString .= explode("_", $futurePhoneme["phone"])[0]."_";
+				$allString .= explode("_", $futurePhoneme["phone"])[0]."_"; // just the first element.
 				sliceAudiofile($startTime, $endTime, $baseAudioFilename, $model."/syllables/".$allString.".mp3");
 			}
 		}
@@ -84,7 +84,7 @@ function sliceAudiofile($start, $end, $inputFilename, $outputFilename){
 		$command = "ffmpeg -i ".$inputFilename;
 		// We're working with mp3 files and our slice begins here
 		$command .= " -vn -acodec mp3 -ss ".$start;
-		// And the slice ends here
+		// And the slice ends there
 		$command .= " -to ".$end;
 		// Save it to disk using the given filename and blatantly disagree with everything
 		// Also, we don't really need the output from ffmpeg, so we just silence it
