@@ -19,25 +19,35 @@ class Synthesizer {
 	 * Produce speech
 	 */
 	public function speak($text){
-		// Retrieve pronunciation from espeak in ipa format
-		$ipa = exec('espeak --ipa=3 -q "'.$text.'"');
-
-		// Process ipa string
-		$ignoreChars = ["ˈ", "ˌ", "ː"]; 
-		// Ignore these as we don't handle emphasis yet
-		$ipa = str_ireplace($ignoreChars, "", $ipa);
-		echo $ipa;
-		// Tokenize and convert to gentle
-		$ipa = explode(" ", $ipa);
+		$realtext = explode(" ", strtolower($text));
 		$soundOrder = [];
-		foreach($ipa as $word){
-			$tokens = explode("_", $word);
-			// Loop through all sounds and match them
-			foreach($tokens as $token){
-				$sound = Converter::convertIPAtoGentle($token);
-				// Make sure it is an actual sound
-				if(!empty($sound)){
-					$soundOrder[] = $sound;
+		foreach($realtext as $position => $word){
+			// Check whether a word exists pre-recorded
+			if(file_exists($this->model."/words/".$word.".mp3") and strlen($word) > 2){
+				// A file exists, so just add that to the order
+				$soundOrder[] = $realtext[$position];
+			// Get phonetics for an unknown string
+			} else {
+				// Retrieve pronunciation from espeak in ipa format
+				$ipa = exec('espeak --ipa=3 -q "'.$word.'"');
+
+				// Process ipa string
+				$ignoreChars = ["ˈ", "ˌ", "ː"]; 
+				// Ignore these as we don't handle emphasis yet
+				$ipa = str_ireplace($ignoreChars, "", $ipa);
+				echo $ipa;
+				// Tokenize and convert to gentle
+				$ipa = explode(" ", $ipa);
+				// Loop through all sounds and match them
+				foreach($ipa as $ipaWordString){
+					$tokens = explode("_", $ipaWordString);
+					foreach($tokens as $token){
+						$sound = Converter::convertIPAtoGentle($token);
+						// Make sure it is an actual sound
+						if(!empty($sound)){
+							$soundOrder[] = $sound;
+						}
+					}
 				}
 			}
 			// TODO: Adjust silence length so it best fits the speaker model
@@ -50,7 +60,14 @@ class Synthesizer {
 			// Add silence
 			if($sound === "silence"){
 				$fileOrder[] = "silence.mp3";
+				echo "Silence...\n";
 			}
+			// Add just isolated words
+			elseif(in_array($sound.".mp3", scandir($this->model."/words/"))){
+				$fileOrder[] = $this->model."/words/".$sound.".mp3";
+				echo "Adding word ".$sound."\n";
+			}
+			// Finally generate arbitrary speech
 			// Do not add the same sound multiple times!
 			elseif(!in_array($soundIndex, $ignoreIndexes)){
 				// Fallback to the isolated phone if our processing doesn't work
@@ -74,7 +91,7 @@ class Synthesizer {
 				}
 
 				// Save what we know is best
-				echo "Saving ".$currentPhoneString."\n";
+				echo "Adding ".$currentPhoneString."\n";
 				if($currentPhoneString === $sound){
 					$fileOrder[] = $this->model."/phones/".$sound.".mp3";
 				} else {
