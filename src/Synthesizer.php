@@ -7,6 +7,7 @@ use Synthi\Converter;
 class Synthesizer {
 
 	public $model;
+	public $accuracy = 3;
 
 	public $outputFilename = "output";
 
@@ -42,23 +43,32 @@ class Synthesizer {
 		$fileOrder = [];
 		$ignoreIndexes = [];
 		foreach($soundOrder as $soundIndex => $sound){
+			// Do not add the same sound multiple times!
 			if(!in_array($soundIndex, $ignoreIndexes)){
+				// Fallback to the isolated phone if our processing doesn't work
+				$save = $this->model."/phones/".$sound.".mp3";
 				// Look into the future, see if there are more sounds present
-				$futureIndex = $soundIndex + 1;
-				if(!empty($soundOrder[$futureIndex])){
-					// Sound is present. Check whether we already know that phoneme context
-					$futureSound = $soundOrder[$futureIndex];
-					if(file_exists($this->model."/syllables/".$sound."_".$futureSound."_.mp3")){
-						// Checkmate!
-						$fileOrder[] = $this->model."/syllables/".$sound."_".$futureSound."_.mp3";
-						// Don't add the same sound twice
-						$ignoreIndexes[] = $futureIndex;
-					} else {
-						// Only save the single phone
-						$fileOrder[] = $this->model."/phones/".$sound.".mp3";
+				$currentPhoneString = $sound;
+				for($i = 1; $i < $this->accuracy; $i++){
+					$futureIndex = $soundIndex + $i;
+					if(!empty($soundOrder[$futureIndex])){
+						// Sound is present. Check whether we already know that phoneme context
+						$futureSound = $soundOrder[$futureIndex];
+						if(file_exists($this->model."/syllables/".$currentPhoneString."_".$futureSound."_.mp3")){
+							// Checkmate!
+							$currentPhoneString .= "_".$futureSound;
+							// Don't add the same sound twice
+							$ignoreIndexes[] = $futureIndex;
+						}
 					}
-				} else {
+				}
+
+				// Save what we know is best
+				echo "Saving ".$currentPhoneString."\n";
+				if($currentPhoneString === $sound){
 					$fileOrder[] = $this->model."/phones/".$sound.".mp3";
+				} else {
+					$fileOrder[] = $this->model."/syllables/".$currentPhoneString."_.mp3";
 				}
 			}	
 		}
