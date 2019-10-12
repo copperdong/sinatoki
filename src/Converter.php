@@ -11,7 +11,7 @@ class Converter {
 		// Many replacements and matches are still wrong. They need to be adjusted.
 		$replace = [
 			"ð" => "th",
-			"ə" => "eh",
+			"ə" => "er",
 			"k" => "k",
 			"w" => "w",
 			"ɪ" => "ih",
@@ -42,7 +42,7 @@ class Converter {
 			"ɐ" => "ah",
 			"u" => "uh",
 			"ɛ" => "eh",
-			"a" => "ay",
+			"a" => "ae",
 			"j" => "y",
 			// Wrong phoneme, but resembles
 			"i" => "iy",
@@ -52,7 +52,7 @@ class Converter {
 			// Incomplete - requires + e
 			"əl" => "l",
 			// Wrong phoneme, but resembles
-			"eə" => "ae",
+			"eə" => "eh",
 			"ʃ" => "sh",
 			"ʊ" => "uh",
 			// Incomplete - requires + e

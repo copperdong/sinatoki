@@ -42,7 +42,8 @@ class Slicer {
 		foreach($this->alignedTranscript["words"] as $index => $word){
 			// Tell the user about the progress, but not all the time
 			if($index % $this->verbosity === 0){
-				echo "Processing word ".$index." of ".count($this->alignedTranscript["words"])."\n";
+				$wordCount = count($this->alignedTranscript["words"]);
+				echo "Processing word ".$index." of ".$wordCount." (".round(($index / $wordCount) * 100, 2)."% completed)\n";
 			}	
 			// Ignore the word if matching didn't work
 			if($word["case"] === "success"){
