@@ -4,6 +4,8 @@ An improved version of the [synthi speech synthesizer originally created at Juge
  
 This code is released under the [MIT License.](LICENSE) The original code was mainly written by [@schokotets](https://github.com/schokotets) and [@JackOBIsReal](https://github.com/JackOBIsReal) - thank you guys a lot! Although almost none of it was retained in this repository, I drew a lot of inspiration from their work.
 
+If you would like to listen to an example: I've included [example.mp3](example.mp3) just for you! It's automatically generated speech of our favorite Adolf Twitler.
+
 ## TODO
 
 Although we can create understandable speech at the moment, some more things will have to be done to make it sound even more natural:
@@ -30,7 +32,7 @@ Synthi depends on several other projects, namely
 
 To use synthi, grab the source code and run ```composer install``` to fetch all external php dependencies as well as creating an autoloader.
 
-Although voice models are generated automatically, you will have to provide an audio file and a transcript of what was said. The longer your audio, the better the quality of the resulting voice model.
+Although voice models are generated automatically, you will have to provide an audio file (currently in mp3 format) and a transcript of what was said. The longer your audio, the better the quality of the resulting voice model.
 
 In order to create the model, run 
 
