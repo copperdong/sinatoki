@@ -95,7 +95,9 @@ class Slicer {
 		}
 
 		// Also save the word as a whole, individually
-		$this->sliceAudiofile($word["start"], $word["end"], $this->modelName."/words/".strtolower($word["word"]).".mp3");
+		if(strlen($word["word"]) > 1){
+			$this->sliceAudiofile($word["start"], $word["end"], $this->modelName."/words/".strtolower($word["word"]).".mp3");
+		}
 	}
 
 	// Assemble an ffmpeg command for slicing everything up

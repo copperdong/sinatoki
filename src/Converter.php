@@ -8,6 +8,7 @@ namespace Synthi;
 class Converter {
 
 	public static function convertIPAtoGentle($ipa){
+		// Many replacements and matches are still wrong. They need to be adjusted.
 		$replace = [
 			"ð" => "th",
 			"ə" => "ah",
@@ -32,7 +33,7 @@ class Converter {
 			"ɡ" => "g",
 			"ɜ" => "er",
 			"h" => "hh",
-			"əʊ" => "aw",
+			"əʊ" => "ow",
 			"d" => "d",
 			"ŋ" => "ng",
 			"t" => "t",
@@ -48,7 +49,9 @@ class Converter {
 			"ɔ" => "ow",
 			"əl" => "l",
 			"eə" => "ae",
-			"ʃ" => "sh"
+			"ʃ" => "sh",
+			"ʊ" => "uh",
+			"aɪə" => "ey"
 		];
 
 		// Map every single ipa sound to a phoneme

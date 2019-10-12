@@ -19,11 +19,11 @@ class Synthesizer {
 	 * Produce speech
 	 */
 	public function speak($text){
-		$realtext = explode(" ", strtolower($text));
+		$realtext = explode(" ", strtolower(trim($text)));
 		$soundOrder = [];
 		foreach($realtext as $position => $word){
 			// Check whether a word exists pre-recorded
-			if(file_exists($this->model."/words/".$word.".mp3") and strlen($word) > 2){
+			if(file_exists($this->model."/words/".$word.".mp3")){
 				// A file exists, so just add that to the order
 				$soundOrder[] = $realtext[$position];
 			// Get phonetics for an unknown string
@@ -32,7 +32,7 @@ class Synthesizer {
 				$ipa = exec('espeak --ipa=3 -q "'.$word.'"');
 
 				// Process ipa string
-				$ignoreChars = ["ˈ", "ˌ", "ː"]; 
+				$ignoreChars = ["ˈ", "ˌ", "ː", " "]; 
 				// Ignore these as we don't handle emphasis yet
 				$ipa = str_ireplace($ignoreChars, "", $ipa);
 				echo $ipa;
