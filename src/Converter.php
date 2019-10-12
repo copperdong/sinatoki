@@ -11,7 +11,7 @@ class Converter {
 		// Many replacements and matches are still wrong. They need to be adjusted.
 		$replace = [
 			"ð" => "th",
-			"ə" => "ah",
+			"ə" => "eh",
 			"k" => "k",
 			"w" => "w",
 			"ɪ" => "ih",
@@ -39,19 +39,30 @@ class Converter {
 			"t" => "t",
 			"θ" => "th",
 			"aɪ" => "ay",
-			"ɐ" => "eh",
+			"ɐ" => "ah",
 			"u" => "uh",
-			"ɛ" => "ae",
-			"a" => "ae",
+			"ɛ" => "eh",
+			"a" => "ay",
 			"j" => "y",
+			// Wrong phoneme, but resembles
 			"i" => "iy",
+			// Incomplete - requires + t
 			"tʃ" => "sh",
 			"ɔ" => "ow",
+			// Incomplete - requires + e
 			"əl" => "l",
+			// Wrong phoneme, but resembles
 			"eə" => "ae",
 			"ʃ" => "sh",
 			"ʊ" => "uh",
-			"aɪə" => "ey"
+			// Incomplete - requires + e
+			"aɪə" => "ey",
+			"ɔɪ" => "oy",
+			"ɑ" => "aa",
+			// Incomplete - requires + aa
+			"iə" => "iy",
+			// Incomplete - requires + a
+			"ʊə" => "uh"
 		];
 
 		// Map every single ipa sound to a phoneme
