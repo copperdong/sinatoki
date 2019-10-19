@@ -11,8 +11,14 @@ class Slicer {
 	public $baseAudioFilename;
 	public $modelName;
 
-	public $sliceSize = 3;	
-	public $verbosity = 10;
+	public $sliceSize = 3;
+
+	// Save the structure
+	private $phoneMap = [
+		"words" => [],
+		"slices" => [],
+		"phones" => []
+	];
 
 	public function __construct($alignedTranscript, $baseAudioFilename, $modelName){
 		// Filename of the transcript
@@ -24,33 +30,19 @@ class Slicer {
 	}
 
 	/**
-	 * Generates necessary file structure for a voice model
-	 */
-	private function generateModelFileStructure(){
-		@mkdir($this->modelName);
-		@mkdir($this->modelName."/words");
-		@mkdir($this->modelName."/phones");
-		@mkdir($this->modelName."/syllables");
-	}
-
-	/**
 	 * Generate the voice model
 	 */
 	public function createModel(){
-		$this->generateModelFileStructure();
 		// Loop through the words (we don't need the rest atm) to figure out stuff
 		foreach($this->alignedTranscript["words"] as $index => $word){
-			// Tell the user about the progress, but not all the time
-			if($index % $this->verbosity === 0){
-				$wordCount = count($this->alignedTranscript["words"]);
-				echo "Processing word ".$index." of ".$wordCount." (".round(($index / $wordCount) * 100, 2)."% completed)\n";
-			}	
 			// Ignore the word if matching didn't work
 			if($word["case"] === "success"){
 				// Extract all phonemes from the file
 				$this->extractPhones($word);
 			}
 		}
+		$this->savePhoneMap();
+		$this->exportVoiceData();
 	}
 
 	/**
@@ -78,7 +70,14 @@ class Slicer {
 
 			$endTime = $startTime + $phone["duration"];
 			// Extract just the isolated phoneme right now
-			$this->sliceAudiofile($startTime, $endTime, $this->modelName."/phones/".$phoneme.".mp3");
+			$phoneId = md5($startTime.$endTime.$phoneme);
+			$this->phoneMap["phones"][$phoneme][] = 
+			[
+				"startTime" => $startTime,
+				"endTime" => $endTime,
+				"file" => $this->modelName."/phones/".$phoneId.".mp3"
+			];
+			//$this->sliceAudiofile($startTime, $endTime, $this->modelName."/phones/".$phoneme.".mp3");
 			// Now, extract the context of the phoneme along with it
 			// Start working from current phoneme, and then look into the future
 			// Save all phonemes that are part of context to string for file naming
@@ -90,14 +89,52 @@ class Slicer {
 					// Phone exists, slice new times
 					$endTime += $futurePhoneme["duration"];
 					$allString .= explode("_", $futurePhoneme["phone"])[0]."_"; // just the first element.
-					$this->sliceAudiofile($startTime, $endTime, $this->modelName."/syllables/".$allString.".mp3");
+					$sliceId = md5($startTime.$endTime.$allString);
+					$this->phoneMap["slices"][$allString][] = 
+					[
+						"startTime" => $startTime,
+						"endTime" => $endTime,
+						"file" => $this->modelName."/slices/".$sliceId.".mp3"
+					];
+					//$this->sliceAudiofile($startTime, $endTime, $this->modelName."/syllables/".$allString.".mp3");
 				}
 			}
 		}
 
 		// Also save the word as a whole, individually
 		if(strlen($word["word"]) > 1){
-			$this->sliceAudiofile($word["start"], $word["end"], $this->modelName."/words/".strtolower($word["word"]).".mp3");
+			$wordId = md5($word["start"].$word["end"].$word["word"]);
+			$this->phoneMap["words"][$word["word"]][] = 
+			[
+				"startTime" => $word["start"],
+				"endTime" => $word["end"],
+				"file" => $this->modelName."/words/".$wordId.".mp3"
+			];
+			// $this->sliceAudiofile($word["start"], $word["end"], $this->modelName."/words/".strtolower($word["word"]).".mp3");
+		}
+	}
+
+	// Save the calculated phone map to disk
+	public function savePhoneMap(){
+		echo "Writing phone map...\n";
+		return file_put_contents($this->modelName."/voice.json", json_encode($this->phoneMap, JSON_PRETTY_PRINT));
+	}
+
+	// Extract all relevant phoneme slices from audio
+	public function exportVoiceData(){
+		// Loop through all
+		foreach($this->phoneMap as $index => $data){
+			// Create a directory if it's not already present
+			echo "Exporting ".count($data)." of ".$index."\n";
+			@mkdir($this->modelName."/".$index);
+			// Go through each sound and export every single one
+			foreach($data as $sound => $sounds){
+				echo "Slicing ".count($sounds)." of ".$sound."\n";
+				// Now finally export all sounds of the same type
+				foreach($sounds as $soundData){
+					$this->sliceAudiofile($soundData["startTime"], $soundData["endTime"], $soundData["file"]);
+				}
+			}
 		}
 	}
 
