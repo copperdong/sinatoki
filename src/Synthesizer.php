@@ -8,22 +8,25 @@ class Synthesizer {
 
 	public $model;
 	public $accuracy = 3;
+	public $modelStructure = [];
 
 	public $outputFilename = "output";
 
 	public function __construct($model){
 		$this->model = $model;
+		// Load the model structure from disk
+		$this->modelStructure = json_decode(file_get_contents($this->model."/voice.json"), true);
 	}
 
 	/**
 	 * Produce speech
 	 */
 	public function speak($text){
-		$realtext = explode(" ", strtolower(trim($text)));
+		$realtext = explode(" ", trim($text));
 		$soundOrder = [];
 		foreach($realtext as $position => $word){
 			// Check whether a word exists pre-recorded
-			if(file_exists($this->model."/words/".$word.".mp3")){
+			if(!empty($this->modelStructure["words"][$word])){
 				// A file exists, so just add that to the order
 				$soundOrder[] = $realtext[$position];
 			// Get phonetics for an unknown string
@@ -63,15 +66,15 @@ class Synthesizer {
 				echo "Silence...\n";
 			}
 			// Add just isolated words
-			elseif(in_array($sound.".mp3", scandir($this->model."/words/"))){
-				$fileOrder[] = $this->model."/words/".$sound.".mp3";
+			elseif(!empty($this->modelStructure["words"][$sound])){
+				$fileOrder[] = $this->modelStructure["words"][$sound][0]["file"];
 				echo "Adding word ".$sound."\n";
 			}
 			// Finally generate arbitrary speech
 			// Do not add the same sound multiple times!
 			elseif(!in_array($soundIndex, $ignoreIndexes)){
 				// Fallback to the isolated phone if our processing doesn't work
-				$save = $this->model."/phones/".$sound.".mp3";
+				$save = $this->modelStructure["phones"][$sound][0]["file"];
 				// Look into the future, see if there are more sounds present
 				$currentPhoneString = $sound;
 				for($i = 1; $i < $this->accuracy; $i++){
@@ -79,7 +82,7 @@ class Synthesizer {
 					if(!empty($soundOrder[$futureIndex])){
 						// Sound is present. Check whether we already know that phoneme context
 						$futureSound = $soundOrder[$futureIndex];
-						if(file_exists($this->model."/syllables/".$currentPhoneString."_".$futureSound."_.mp3")){
+						if(!empty($this->modelStructure["slices"][$currentPhoneString."_".$futureSound."_"])){
 							// Checkmate!
 							$currentPhoneString .= "_".$futureSound;
 							// Don't add the same sound twice
@@ -93,9 +96,9 @@ class Synthesizer {
 				// Save what we know is best
 				echo "Adding ".$currentPhoneString."\n";
 				if($currentPhoneString === $sound){
-					$fileOrder[] = $this->model."/phones/".$sound.".mp3";
+					$fileOrder[] = $this->modelStructure["phones"][$sound][0]["file"];
 				} else {
-					$fileOrder[] = $this->model."/syllables/".$currentPhoneString."_.mp3";
+					$fileOrder[] = $this->modelStructure["slices"][$currentPhoneString."_"][0]["file"];
 				}
 			}	
 		}

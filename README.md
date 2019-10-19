@@ -44,6 +44,8 @@ If you'd like to use my included example, it would look something like this:
 
 That's it! Nothing more for you to do ;)
 
+Please note that the process is quite load-heavy and may take a while to complete. Make sure you have sufficient disk space available for the model.
+
 ## Usage
 
 To generate speech, use synthesizer.php like so:
