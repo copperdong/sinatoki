@@ -67,7 +67,8 @@ class Synthesizer {
 			}
 			// Add just isolated words
 			elseif(!empty($this->modelStructure["words"][$sound])){
-				$fileOrder[] = $this->modelStructure["words"][$sound][0]["file"];
+				$random = array_rand($this->modelStructure["words"][$sound]);
+				$fileOrder[] = $this->modelStructure["words"][$sound][$random]["file"];
 				echo "Adding word ".$sound."\n";
 			}
 			// Finally generate arbitrary speech
@@ -96,9 +97,11 @@ class Synthesizer {
 				// Save what we know is best
 				echo "Adding ".$currentPhoneString."\n";
 				if($currentPhoneString === $sound){
-					$fileOrder[] = $this->modelStructure["phones"][$sound][0]["file"];
+					$random = array_rand($this->modelStructure["phones"][$sound]);
+					$fileOrder[] = $this->modelStructure["phones"][$sound][$random]["file"];
 				} else {
-					$fileOrder[] = $this->modelStructure["slices"][$currentPhoneString."_"][0]["file"];
+					$random = array_rand($this->modelStructure["slices"][$currentPhoneString."_"]);
+					$fileOrder[] = $this->modelStructure["slices"][$currentPhoneString."_"][$random]["file"];
 				}
 			}	
 		}

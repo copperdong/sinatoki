@@ -135,6 +135,7 @@ class Slicer {
 	// Save the calculated phone map to disk
 	public function savePhoneMap(){
 		echo "Writing phone map...\n";
+		@mkdir($this->modelName);
 		return file_put_contents($this->modelName."/voice.json", json_encode($this->phoneMap, JSON_PRETTY_PRINT));
 	}
 
@@ -145,7 +146,7 @@ class Slicer {
 			// Create a directory if it's not already present
 			echo "Exporting ".count($data)." of ".$index."\n";
 			@mkdir($this->modelName."/".$index);
-			
+
 			// Go through each sound and export every single one
 			foreach($data as $sound => $sounds){
 				echo "Slicing ".count($sounds)." of ".$sound."\n";
