@@ -2,7 +2,7 @@
 
 include("vendor/autoload.php");
 
-use Synthi\Synthesizer;
+use Sinatoki\Synthesizer;
 
 // The script that handles the actual speech synthesis
 

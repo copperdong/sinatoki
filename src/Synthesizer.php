@@ -1,8 +1,8 @@
 <?php
 
-namespace Synthi;
+namespace Sinatoki;
 
-use Synthi\Converter;
+use Sinatoki\Converter;
 
 class Synthesizer {
 

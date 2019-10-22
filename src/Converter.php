@@ -1,6 +1,6 @@
 <?php
 
-namespace Synthi;
+namespace Sinatoki;
 
 /**
  * Converting IPA symbols to gentle/kaldi phones

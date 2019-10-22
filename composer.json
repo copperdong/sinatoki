@@ -1,5 +1,5 @@
 {
-    "name": "nkreer/synthi-tts-revamped",
+    "name": "nkreer/sinatoki",
     "description": "speech synthesizer",
     "type": "project",
     "license": "MIT",
@@ -12,7 +12,7 @@
     "require": {},
     "autoload": {
        "psr-4": {
-          "Synthi\\": "src/"
+          "Sinatoki\\": "src/"
        }
     }
 }

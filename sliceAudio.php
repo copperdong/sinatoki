@@ -4,7 +4,7 @@ include("vendor/autoload.php");
 
 error_reporting(E_ALL);
 
-use Synthi\Slicer;
+use Sinatoki\Slicer;
 
 /*
  * 1: gentle output, time aligned phonetics

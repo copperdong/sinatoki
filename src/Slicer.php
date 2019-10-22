@@ -1,6 +1,6 @@
 <?php
 
-namespace Synthi;
+namespace Sinatoki;
 
 /**
  * Slice up the given audio file based on a time-aligned transcript outputted by the gentle forced aligner
