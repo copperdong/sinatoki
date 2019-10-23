@@ -11,7 +11,7 @@ Sinatoki depends on several other **open source** projects, namely
 * [composer](https://getcomposer.org/): fetch other php dependencies
 * [docker](https://www.docker.com/get-started): required to run the container of the forced aligner gentle
 * [gentle](https://github.com/lowerquality/gentle): aligning audio with transcript on phoneme level (is automatically downloaded and installed when the model creation script creates the docker container)
-* [espeak](http://espeak.sourceforge.net/): handles correct pronunciation and emphasis
+* [espeak-ng](https://github.com/espeak-ng/espeak-ng): handles correct pronunciation and emphasis
 * [ffmpeg](https://ffmpeg.org/): slices speech
 * mp3 codecs provided by your distribution
 

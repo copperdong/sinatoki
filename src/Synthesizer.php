@@ -32,7 +32,7 @@ class Synthesizer {
 			// Get phonetics for an unknown string
 			} else {
 				// Retrieve pronunciation from espeak in ipa format
-				$ipa = exec('espeak --ipa=3 -q "'.$word.'"');
+				$ipa = exec('espeak-ng --ipa=1 -q "'.$word.'"');
 
 				// Process ipa string
 				$ignoreChars = ["ˈ", "ˌ", "ː", " "]; 
